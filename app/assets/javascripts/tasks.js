@@ -9,11 +9,10 @@ $(function () {
       checkedStatus +
       '><label>' +
       task.title +
-      '</label></div></li>';
+      '</label><span class="destroyButton">x</span></div></li>';
 
     return liElement;
   }
-
 
   function toggleTask(e) {
     var itemId = $(e.target).data("id");
@@ -44,7 +43,9 @@ $(function () {
     ulTodos.html(htmlString);
 
     $('.toggle').change(toggleTask);
-
+    $('.destroyButton').click(function () {
+      console.log('You clicked the x');
+    });
   });
 
 
@@ -61,6 +62,7 @@ $(function () {
       var ulTodos = $('.todo-list');
       ulTodos.append(htmlString);
       $('.toggle').click(toggleTask);
+      $('.new-todo').val('')
     });
   });
 
