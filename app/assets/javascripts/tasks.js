@@ -9,13 +9,15 @@ $(function () {
       checkedStatus +
       '><label>' +
       task.title +
-      '</label><span class="destroyButton">x</span></div></li>';
+      '<span class="destroyButton" data-destroy="' + task.id + '" >&times</span></label></div></li>';
 
     return liElement;
   }
 
   function toggleTask(e) {
+
     var itemId = $(e.target).data("id");
+
 
     var doneValue = Boolean($(e.target).is(':checked'));
 
@@ -29,8 +31,19 @@ $(function () {
       var $li = $("#listItem-" + data.id);
       $li.replaceWith(liHtml);
       $('.toggle').change(toggleTask);
+      $('.destroyButton').click(function (e) {
+        var itemId = $(e.target).data("destroy");
+        deleteTask(itemId);
+      });
 
     });
+  }
+
+  function deleteTask(itemId) {
+    $.post("/tasks/" + itemId, {
+      _method: "DELETE",
+    });
+    $('#listItem-' + itemId).remove();
   }
 
   $.get("/tasks").success(function (data) {
@@ -43,8 +56,9 @@ $(function () {
     ulTodos.html(htmlString);
 
     $('.toggle').change(toggleTask);
-    $('.destroyButton').click(function () {
-      console.log('You clicked the x');
+    $('.destroyButton').click(function (e) {
+      var itemId = $(e.target).data("destroy");
+      deleteTask(itemId);
     });
   });
 
@@ -62,6 +76,10 @@ $(function () {
       var ulTodos = $('.todo-list');
       ulTodos.append(htmlString);
       $('.toggle').click(toggleTask);
+      $('.destroyButton').click(function (e) {
+        var itemId = $(e.target).data("destroy");
+        deleteTask(itemId);
+      });
       $('.new-todo').val('')
     });
   });
